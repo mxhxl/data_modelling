@@ -51,6 +51,15 @@ Run the same three SQL files again. Use `sql/04_check_results.sql` to look at th
 Running the same day twice is safe: the ingest skips files it already loaded, and the SQL finds nothing new.
 To start over, run `DROP DATABASE LOGI2_DB;` in a worksheet.
 
+## Results
+Rejected orders with the reason for each:
+
+![Rejected orders and reasons](images/snowflake_reason.png)
+
+Customer history (SCD Type 2), old row kept when a customer moves:
+
+![Customer history](images/snowflake_scd.png)
+
 ## Resume bullets, and where to find them
 | Bullet | Where |
 |---|---|

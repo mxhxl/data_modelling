@@ -37,6 +37,8 @@ fact_orders + order_status_history              final tables
 
 Each day you run the Python script once, then the three SQL files in order.
 
+**Why run one day at a time?** The SQL builds its tables from whatever is in the raw tables at that moment. Day 1 first gives it the original customers and orders. Day 2 then shows what *changed*: customers who moved, orders whose status moved forward. If both days are loaded before the SQL runs, the pipeline only ever sees the newest version, so there is no history and no "only 10 new orders". The results are still correct, but the history and incremental parts have nothing to show.
+
 | Table | One row means |
 |---|---|
 | `raw_orders`, `raw_customers` | a row exactly as in the CSV (+ source_file, batch_id, loaded_at) |
