@@ -41,8 +41,7 @@ Each day you run the Python script once, then the three SQL files in order.
 |---|---|
 | `raw_orders`, `raw_customers` | a row exactly as in the CSV (+ source_file, batch_id, loaded_at) |
 | `latest_orders`, `latest_customers` | the newest version of each order / customer |
-| `checked_orders` | an order + the problem found (if any) |
-| `clean_orders` / `rejected_orders` | good orders / bad orders |
+| `clean_orders` / `rejected_orders` | good orders / bad orders (rejected ones also show the problem found) |
 | `dim_customer` | one **version** of a customer |
 | `fact_orders` | one order (final) |
 | `order_status_history` | one status an order has had |
@@ -75,17 +74,19 @@ QUALIFY ROW_NUMBER() OVER (PARTITION BY order_id ORDER BY source_file DESC) = 1
 ```
 In words: for each `order_id`, number its rows with the newest file first, and keep number 1. `TRY_TO_DATE` and `TRY_TO_NUMBER` turn text into real dates and numbers (and give `NULL` instead of an error if the text is bad).
 
-**2) Check.** One `CASE` labels each order with the first problem found:
+**2) Good rows.** `clean_orders` = orders that pass every rule in a `WHERE`: valid status, known customer, amount above 0, ship date present once shipped, not shipped before ordered.
+
+**3) Bad rows.** `rejected_orders` = every order that is **not in** `clean_orders`. One `CASE` writes the first problem found next to each bad order:
 ```sql
 CASE
   WHEN status IS NULL OR status NOT IN ('Created', ... ) THEN 'INVALID_STATUS'
+  WHEN customer_id NOT IN (SELECT customer_id FROM ...RAW_CUSTOMERS) THEN 'UNKNOWN_CUSTOMER'
+  WHEN amount IS NULL OR amount <= 0 THEN 'BAD_AMOUNT'
   WHEN status IN ('Shipped','In Transit','Delivered') AND ship_date IS NULL THEN 'MISSING_SHIP_DATE'
   WHEN ship_date < order_date THEN 'SHIP_BEFORE_ORDER'
 END AS issue
 ```
-`CASE` is just if / else-if. No match means `issue` stays empty, which means a good order.
-
-**3) and 4) Split.** `clean_orders` = rows where `issue IS NULL`. `rejected_orders` = rows where `issue IS NOT NULL`.
+`CASE` is just if / else-if. The `WHERE` decides good or bad, and the `CASE` only explains why.
 
 Result: day 1 gives **20 good, 5 bad**. Day 2 gives **24 good, 6 bad** (one broken order was fixed, two new ones were broken).
 
@@ -196,5 +197,5 @@ The data is fake, small, and generated with AI. It's a learning project, not a p
 ## 8. Practice
 
 1. **Break a row.** In `data/orders_day1.csv`, blank the `ship_date` of a "Shipped" order. Re-run day 1 (after `DROP DATABASE LOGI2_DB;`). Find it in `rejected_orders`.
-2. **Add a rule.** In `01_quality_checks.sql`, add a line to the `CASE`: `WHEN amount IS NULL OR amount <= 0 THEN 'BAD_AMOUNT'`.
+2. **Add a rule.** In `01_quality_checks.sql`, add a line to the good-rows `WHERE` (for example `AND amount < 10000`) and a matching line to the `CASE`.
 3. **Explain aloud.** Say the 30-second pitch without looking.

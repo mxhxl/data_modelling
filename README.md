@@ -57,7 +57,7 @@ To start over, run `DROP DATABASE LOGI2_DB;` in a worksheet.
 | Relational data model for the order lifecycle | `fact_orders`, `dim_customer`, `order_status_history` (`sql/02` and `sql/03`) |
 | Incremental load logic | `new_orders` and `MERGE` in `sql/03_load_orders.sql` |
 | Slowly changing dimensions | `sql/02_customer_history.sql` |
-| Automated quality checks (missing shipment dates, bad statuses) | the `CASE` in `sql/01_quality_checks.sql` |
+| Automated quality checks (missing shipment dates, bad statuses) | the `WHERE` and `CASE` in `sql/01_quality_checks.sql` |
 | Validated, query-ready tables | `clean_orders`, `fact_orders` |
 
 Read [WALKTHROUGH.md](WALKTHROUGH.md) to understand every step, plus interview answers.
