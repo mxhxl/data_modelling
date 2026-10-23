@@ -1,0 +1,12 @@
+customer_id,customer_name,city,country,updated_at
+C001,Acme Ltd,New York,USA,2026-01-10
+C002,Globex Ltd,Berlin,Germany,2026-01-10
+C003,Initech Ltd,Singapore,Singapore,2026-01-11
+C004,Umbrella Ltd,Sao Paulo,Brazil,2026-01-10
+C005,Hooli Ltd,Tokyo,Japan,2026-01-10
+C006,Stark Ltd,London,UK,2026-01-10
+C007,Wayne Ltd,Madrid,Spain,2026-01-11
+C008,Wonka Ltd,Toronto,Canada,2026-01-10
+C009,Tyrell Ltd,Paris,France,2026-01-10
+C010,Cyberdyne Ltd,Dubai,UAE,2026-01-10
+C011,Soylent Ltd,Seoul,South Korea,2026-01-11

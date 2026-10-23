@@ -1,0 +1,5 @@
+# passwords and local files never go to Git
+.env
+venv/
+__pycache__/
+*.db
