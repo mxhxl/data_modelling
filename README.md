@@ -46,6 +46,8 @@ Run the same three SQL files again. Use `sql/04_check_results.sql` to look at th
 | `dim_customer` rows | 10 | 13 |
 | orders processed this run / total | 20 / 20 | 10 / 24 |
 
+`python ingest_snowflake.py all` loads both days in one go. It is fine for a quick test, but the history demo (customers who moved, status journeys) needs the SQL run between the days, so use `day1` and `day2` for that.
+
 Running the same day twice is safe: the ingest skips files it already loaded, and the SQL finds nothing new.
 To start over, run `DROP DATABASE LOGI2_DB;` in a worksheet.
 

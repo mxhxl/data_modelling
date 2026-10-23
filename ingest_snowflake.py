@@ -3,6 +3,7 @@ Loads one day of CSV files into Snowflake RAW tables.
 
   python ingest_snowflake.py day1
   python ingest_snowflake.py day2
+  python ingest_snowflake.py all     (both days, day 1 first)
 """
 import csv
 import os
@@ -12,12 +13,14 @@ from pathlib import Path
 
 import snowflake.connector
 
-if len(sys.argv) != 2 or sys.argv[1] not in ("day1", "day2"):
+if len(sys.argv) != 2 or sys.argv[1] not in ("day1", "day2", "all"):
     print(__doc__)
     sys.exit(1)
 
 day = sys.argv[1]
-files = sorted(Path("data").glob(f"*_{day}.csv"))
+# "all" takes every CSV; sorted() puts day1 files before day2 files
+pattern = "*.csv" if day == "all" else f"*_{day}.csv"
+files = sorted(Path("data").glob(pattern))
 if not files:
     print(f"No CSV files found in the data folder for {day}.")
     sys.exit(1)
